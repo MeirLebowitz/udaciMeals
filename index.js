@@ -1,19 +1,90 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './components/App';
-import registerServiceWorker from './registerServiceWorker';
-import {createStore} from 'redux'
-import reducer from './reducers'
-import {Provider} from 'react-redux'
+import {
+    ADD_RECIPE,
+    REMOVE_FROM_CALENDAR
+} from '../actions'
+import {combineReducers} from 'redux'
 
-const store = createStore(
-    reducer,
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-)
-console.log(store)
-ReactDOM.render(
-    <Provider  store= {store}>
-     <App/>
-    </Provider>, document.getElementById('root'));
-registerServiceWorker();
+function food (state = {}, action) {
+    switch (action.type) {
+        case ADD_RECIPE:
+        const {recipe} = action
+
+        return {
+            ...state,
+            [recipe.label]: recipe
+        }
+        break;
+        default:
+            return state
+        }
+}
+
+const initialCalendarState = {
+  sunday: {
+    breakfast: null,
+    lunch: null,
+    dinner: null,
+  },
+  monday: {
+    breakfast: null,
+    lunch: null,
+    dinner: null,
+  },
+  tuesday: {
+    breakfast: null,
+    lunch: null,
+    dinner: null,
+  },
+  wednesday: {
+    breakfast: null,
+    lunch: null,
+    dinner: null,
+  },
+  thursday: {
+    breakfast: null,
+    lunch: null,
+    dinner: null,
+  },
+  friday: {
+    breakfast: null,
+    lunch: null,
+    dinner: null,
+  },
+  saturday: {
+    breakfast: null,
+    lunch: null,
+    dinner: null,
+  },
+}
+
+
+function calendar(state = initialCalendarState, action){
+    const{day,recipe,meal}=action
+    switch(action.type){
+        case ADD_RECIPE:
+            return {
+                ...state,
+                [day]: {
+                    ...state[day],
+                    [meal]:recipe.label,
+                }
+            }
+        case REMOVE_FROM_CALENDAR:
+            return{
+                ...state,
+                [day]:{
+                    ...state[day],
+                    [meal]:null,
+                }
+            }
+        default:
+        return state
+            break;
+
+    }
+
+}
+export default combineReducers({
+    calendar,
+    food
+});
